@@ -1,0 +1,32 @@
+The app is split into two main parts:
+
+Client (Next.js)
+- Organized using a feature-based structure where each feature has its own folder
+- Auth feature contains everything related to login - containers, hooks, and validation logic
+- Shared components like Button, InputField, and LoadingSpinner are reusable across features
+- Services layer handles all API calls, keeping the business logic clean
+- Local storage manages session tokens on the client side
+- The whole architecture is pretty bulletproof because each part has a clear job and they don't step on each other's toes
+
+Server (Node.js/Express)
+- Standard MVC pattern with controllers, services, and routes
+- Controllers handle HTTP stuff, services contain business logic
+- Everything is typed with TypeScript to catch errors early
+- Middleware handles auth checks and error handling centrally
+
+OTP generation and validation
+How it works:
+1. User enters email or phone number
+2. Server generates a 6-digit random OTP and stores it in memory with expiry time (5 minutes)
+3. OTP gets logged to console
+4. User enters the OTP on the client
+5. Server validates it and returns a JWT token if correct
+
+Security measures:
+- OTP expires after 5 minutes
+- Only 3 attempts allowed per OTP
+- After 3 wrong attempts, user gets blocked for 10 minutes
+- Once verified successfully, OTP is immediately deleted from memory
+- JWT token expires after 24 hours
+
+The validation is pretty straightforward - we just check if the OTP matches, isn't expired, and user hasn't exceeded max attempts. If all good, generate JWT and delete the OTP.
